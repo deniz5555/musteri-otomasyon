@@ -1,0 +1,9 @@
+{
+  "name": "musteri-otomasyon-railway-root",
+  "private": true,
+  "description": "Railway/Nixpacks bu dosyayi repo kokunde arar; asil uygulama musteri-otomasyon/ altinda.",
+  "scripts": {
+    "build": "cd musteri-otomasyon && npm install && npm run build",
+    "start": "cd musteri-otomasyon && npm start"
+  }
+}
