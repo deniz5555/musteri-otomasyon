@@ -192,7 +192,9 @@ async function showCampaignDetail(campaignId, container) {
                     btn.innerHTML = '<div class="loader" style="width:16px;height:16px;border-width:2px"></div> Gönderiliyor...';
                     try {
                         const result = await api.batchSendEmails(campaignId);
-                        showToast(`${result.sent} e-posta gönderildi! 🚀`);
+                        const failPart = result.failed > 0 ? ` ${result.failed} başarısız.` : '';
+                        const hint = result.errors?.length ? ` ${result.errors[0]}` : '';
+                        showToast(`${result.sent} gönderildi.${failPart}${hint}`, result.failed > 0 ? 'error' : 'success');
                         closeModal();
                         renderCampaigns(container);
                     } catch (err) { 

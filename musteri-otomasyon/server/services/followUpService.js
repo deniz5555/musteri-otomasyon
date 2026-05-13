@@ -53,6 +53,9 @@ export async function processFollowUps() {
         }
 
         try {
+            if (!email.lead_email || !String(email.lead_email).trim()) {
+                throw new Error('Lead e-posta adresi yok');
+            }
             console.log(`📨 Takip e-postası gönderiliyor: ${email.lead_name} (Takip #${followUpCount + 1})`);
 
             const content = await generateFollowUpEmail(
@@ -61,11 +64,11 @@ export async function processFollowUps() {
                 followUpCount + 1
             );
 
+            await sendEmail({ to: email.lead_email, subject: content.subject, html: content.body });
+
             const id = uuidv4();
             db.prepare(`INSERT INTO emails (id, lead_id, campaign_id, subject, body, type, status, sent_at) VALUES (?, ?, ?, ?, ?, ?, 'sent', CURRENT_TIMESTAMP)`)
                 .run(id, email.lead_id, email.campaign_id, content.subject, content.body, `followup_${followUpCount + 1}`);
-
-            await sendEmail({ to: email.lead_email, subject: content.subject, html: content.body });
             processed++;
         } catch (error) {
             console.error(`Takip e-postası gönderilemedi (${email.lead_name}):`, error.message);

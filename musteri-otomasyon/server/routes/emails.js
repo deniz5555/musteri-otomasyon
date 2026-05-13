@@ -143,31 +143,24 @@ router.post('/batch-send', async (req, res) => {
 
         for (const lead of campaignLeads) {
             try {
-                // Lead için e-posta oluştur
+                if (!lead.email || !String(lead.email).trim()) {
+                    throw new Error('Lead e-posta adresi yok');
+                }
                 const emailContent = await generateEmail(lead, campaign, null);
-                
-                // E-postayı gönder
+                await sendEmail({ to: lead.email, subject: emailContent.subject, html: emailContent.body });
+
                 const id = uuidv4();
                 db.prepare(`
                     INSERT INTO emails (id, lead_id, campaign_id, subject, body, type, status, sent_at) 
                     VALUES (?, ?, ?, ?, ?, 'initial', 'sent', CURRENT_TIMESTAMP)
                 `).run(id, lead.id, campaign_id, emailContent.subject, emailContent.body);
 
-                // Lead status güncelle
                 db.prepare(`UPDATE leads SET status = 'contacted', updated_at = CURRENT_TIMESTAMP WHERE id = ?`)
                     .run(lead.id);
 
-                // Kampanya stat güncelle
                 db.prepare(`UPDATE campaign_leads SET status = 'sent' WHERE campaign_id = ? AND lead_id = ?`)
                     .run(campaign_id, lead.id);
 
-                // Gerçek gönderimi dene (SMTP gerekliyse)
-                try {
-                    await sendEmail({ to: lead.email, subject: emailContent.subject, html: emailContent.body });
-                } catch (smtpErr) {
-                    console.warn(`SMTP gönderimi başarısız (${lead.email}):`, smtpErr.message);
-                    // Veritabanı kayıtları halihazırda yapılmış, sadece log yap
-                }
                 sent++;
             } catch (err) {
                 failed++;

@@ -20,10 +20,14 @@ function createTransporter() {
     if (!settings.smtp_host || !settings.smtp_user) {
         throw new Error('SMTP ayarları yapılandırılmamış. Lütfen Ayarlar sayfasından SMTP bilgilerinizi girin.');
     }
+    const port = parseInt(settings.smtp_port, 10) || 587;
     return nodemailer.createTransport({
         host: settings.smtp_host,
-        port: parseInt(settings.smtp_port, 10) || 587,
-        secure: String(settings.smtp_port) === '465',
+        port,
+        secure: port === 465,
+        requireTLS: port === 587,
+        connectionTimeout: 25_000,
+        greetingTimeout: 15_000,
         auth: { user: settings.smtp_user, pass: settings.smtp_pass }
     });
 }
