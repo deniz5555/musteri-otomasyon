@@ -114,6 +114,22 @@ function createTransporter() {
 }
 
 /**
+ * Resend İngilizce hata metinlerini kullanıcı için Türkçe / işlem adımlarıyla zenginleştirir.
+ */
+function formatResendClientError(raw) {
+    const msg = typeof raw === 'string' ? raw : String(raw || '');
+    if (!msg) return raw;
+    const l = msg.toLowerCase();
+    if (l.includes('only send testing emails') || (l.includes('verify a domain') && l.includes('recipients'))) {
+        return [
+            'Resend test adresi (ör. onboarding@resend.dev) ile yalnızca Resend hesabınıza kayıtlı kendi e-postanıza gönderim yapılabilir.',
+            'Lead veya başka alıcılara göndermek için https://resend.com/domains adresinde kendi alan adınızı doğrulayın; ardından "Resend Gönderen (From)" alanını o domainden bir adres yapın (ör. Firma Adı <iletisim@sirketiniz.com>).',
+        ].join(' ');
+    }
+    return msg;
+}
+
+/**
  * Resend REST API (HTTPS). Railway Hobby vb. planda SMTP portu kapalıyken kullanılır.
  * @see https://resend.com/docs/api-reference/emails/send-email
  */
@@ -157,8 +173,8 @@ async function sendViaResend(cfg, { to, subject, html, text }) {
 
     const data = await res.json().catch(() => ({}));
     if (!res.ok) {
-        const msg = data.message || data.name || (typeof data === 'string' ? data : JSON.stringify(data));
-        throw new Error(msg || `Resend HTTP ${res.status}`);
+        const raw = data.message || data.name || (typeof data === 'string' ? data : JSON.stringify(data));
+        throw new Error(formatResendClientError(raw) || `Resend HTTP ${res.status}`);
     }
     const id = data.id || data?.data?.id || 'unknown';
     console.log(`📧 Resend e-posta: ${to} - ${subject} (${id})`);
@@ -213,7 +229,8 @@ async function testResendConnection(cfg) {
             return {
                 success: true,
                 provider: 'resend',
-                message: 'Resend API erişimi başarılı (HTTPS). Gönderen adresinin Resend’de doğrulanmış olduğundan emin olun.',
+                message:
+                    'Resend API erişimi başarılı. Not: onboarding@resend.dev ile yalnızca hesap e-postanıza test gönderilir; leadlere göndermek için resend.com/domains üzerinden domain doğrulayıp From adresini güncelleyin.',
             };
         }
         const data = await res.json().catch(() => ({}));
