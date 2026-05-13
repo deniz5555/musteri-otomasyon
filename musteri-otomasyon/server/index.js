@@ -1,6 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
+import dns from 'node:dns';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { getDb, closeDb } from './db/database.js';
@@ -12,6 +13,11 @@ import followupsRouter from './routes/followups.js';
 import { startScheduler } from './cron/scheduler.js';
 
 dotenv.config();
+
+// Railway vb. bulutlarda SMTP (smtp.gmail.com) IPv6 ile ETIMEDOUT verebiliyor; IPv4 önce.
+if (typeof dns.setDefaultResultOrder === 'function') {
+    dns.setDefaultResultOrder('ipv4first');
+}
 
 const app = express();
 const PORT = process.env.PORT || 3001;

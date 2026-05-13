@@ -15,20 +15,34 @@ function getSmtpSettings() {
     };
 }
 
+function smtpSocketFamily() {
+    const n = parseInt(process.env.SMTP_IP_FAMILY || '4', 10);
+    return n === 6 ? 6 : 4;
+}
+
 function createTransporter() {
     const settings = getSmtpSettings();
     if (!settings.smtp_host || !settings.smtp_user) {
         throw new Error('SMTP ayarları yapılandırılmamış. Lütfen Ayarlar sayfasından SMTP bilgilerinizi girin.');
     }
     const port = parseInt(settings.smtp_port, 10) || 587;
+    const debug = process.env.SMTP_DEBUG === '1';
     return nodemailer.createTransport({
-        host: settings.smtp_host,
+        host: settings.smtp_host.trim(),
         port,
         secure: port === 465,
         requireTLS: port === 587,
-        connectionTimeout: 25_000,
-        greetingTimeout: 15_000,
-        auth: { user: settings.smtp_user, pass: settings.smtp_pass }
+        family: smtpSocketFamily(),
+        connectionTimeout: 35_000,
+        greetingTimeout: 20_000,
+        socketTimeout: 60_000,
+        tls: {
+            minVersion: 'TLSv1.2',
+            servername: settings.smtp_host.trim(),
+        },
+        auth: { user: settings.smtp_user, pass: settings.smtp_pass },
+        debug,
+        logger: debug,
     });
 }
 
