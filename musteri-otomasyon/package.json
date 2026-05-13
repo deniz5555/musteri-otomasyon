@@ -1,0 +1,27 @@
+{
+  "name": "musteri-otomasyon",
+  "version": "1.0.0",
+  "description": "Yapay Zeka Müşteri Bulma Otomasyonu",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"npm run server\" \"npm run client\"",
+    "server": "node server/index.js",
+    "client": "cd client && npx vite --port 5173",
+    "build": "cd client && npx vite build"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "cors": "^2.8.5",
+    "better-sqlite3": "^11.6.0",
+    "nodemailer": "^6.9.16",
+    "node-cron": "^3.0.3",
+    "dotenv": "^16.4.7",
+    "openai": "^4.77.0",
+    "uuid": "^11.0.3",
+    "apify-client": "^2.11.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0",
+    "vite": "^6.0.0"
+  }
+}
