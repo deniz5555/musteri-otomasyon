@@ -29,6 +29,59 @@ export function getMailSettings() {
     };
 }
 
+/**
+ * Resend `from` alanı: yalnızca `email@domain.com` veya `İsim <email@domain.com>` (tek satır, düzgün <>).
+ * Kopyala-yapışır satır sonları / akıllı tırnak sık hataya yol açar.
+ */
+export function normalizeResendFrom(raw, displayNameFallback = 'LeadForge') {
+    let s = String(raw || '')
+        .replace(/\uFEFF/g, '')
+        .replace(/[\u201c\u201d]/g, '"')
+        .replace(/[\u2018\u2019]/g, "'")
+        .replace(/[\r\n\t]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+
+    if (!s) {
+        throw new Error(
+            'Resend "Gönderen" boş. Örnek: onboarding@resend.dev veya LeadForge <onboarding@resend.dev> (tek satır).'
+        );
+    }
+
+    const emailOnly = /^[^\s<>]+@[^\s<>]+$/;
+    if (emailOnly.test(s)) {
+        const name = String(displayNameFallback || 'LeadForge')
+            .replace(/[\r\n<>]/g, ' ')
+            .replace(/\s+/g, ' ')
+            .trim()
+            .replace(/^["']|["']$/g, '') || 'LeadForge';
+        return `${name} <${s}>`;
+    }
+
+    const bracket = s.match(/^(.+?)<\s*([^<>]+?)\s*>$/);
+    if (bracket) {
+        let name = bracket[1].trim().replace(/^["']+|["']+$/g, '').replace(/\s+/g, ' ').trim();
+        const email = bracket[2].trim();
+        if (!emailOnly.test(email)) {
+            throw new Error(
+                `Resend "Gönderen" içindeki e-posta geçersiz: "${email}". Örnek: LeadForge <onboarding@resend.dev>`
+            );
+        }
+        if (!name) name = String(displayNameFallback || 'LeadForge').replace(/[\r\n<>]/g, ' ').trim() || 'LeadForge';
+        return `${name} <${email}>`;
+    }
+
+    if (s.includes('<') && !s.includes('>')) {
+        throw new Error(
+            'Resend "Gönderen" eksik kapanış: `>` karakteri olmalı. Örnek: LeadForge <onboarding@resend.dev>'
+        );
+    }
+
+    throw new Error(
+        'Resend "Gönderen" geçersiz. İzin verilen biçimler: (1) sadece e-posta onboarding@resend.dev (2) İsim <eposta@alan.com> — satır sonu kullanmayın, tırnakları düz " veya hiç kullanmayın.'
+    );
+}
+
 function smtpSocketFamily() {
     const n = parseInt(process.env.SMTP_IP_FAMILY || '4', 10);
     return n === 6 ? 6 : 4;
@@ -74,8 +127,10 @@ async function sendViaResend(cfg, { to, subject, html, text }) {
         );
     }
 
+    const from = normalizeResendFrom(cfg.resend_from, cfg.smtp_from_name);
+
     const body = {
-        from: cfg.resend_from,
+        from,
         to: [to],
         subject,
     };
@@ -138,6 +193,13 @@ export async function sendEmail({ to, subject, html, text }) {
 async function testResendConnection(cfg) {
     if (!cfg.resend_api_key) {
         return { success: false, provider: 'resend', message: 'Resend API anahtarı girilmemiş.' };
+    }
+    if (cfg.resend_from) {
+        try {
+            normalizeResendFrom(cfg.resend_from, cfg.smtp_from_name);
+        } catch (e) {
+            return { success: false, provider: 'resend', message: e.message };
+        }
     }
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 15_000);

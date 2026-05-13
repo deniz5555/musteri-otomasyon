@@ -39,6 +39,7 @@ export async function renderSettings(container) {
             <div class="settings-grid" style="margin-top:var(--space-md)">
                 <div class="form-group" style="grid-column:1/-1"><label class="form-label">Resend API Key</label><input class="form-input s-input" data-key="resend_api_key" type="password" value="${escapeAttr(settings.resend_api_key || '')}" placeholder="re_..."></div>
                 <div class="form-group" style="grid-column:1/-1"><label class="form-label">Resend Gönderen (From)</label><input class="form-input s-input" data-key="resend_from" value="${escapeAttr(settings.resend_from || '')}" placeholder="LeadForge &lt;onboarding@resend.dev&gt;"></div>
+                <p style="grid-column:1/-1;font-size:var(--font-xs);color:var(--text-tertiary);margin:-8px 0 0 0">Tek satır. Ya yalnızca e-posta ya da <code style="font-size:11px">Isim &lt;eposta@alan.com&gt;</code> biçimi; satır sonu ve eksik &gt; kullanmayın.</p>
             </div>
         </div>
 
