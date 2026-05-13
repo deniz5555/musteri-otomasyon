@@ -9,7 +9,15 @@ async function request(url, options = {}) {
         config.body = JSON.stringify(config.body);
     }
     const res = await fetch(`${API_BASE}${url}`, config);
-    const data = await res.json();
+    const text = await res.text();
+    let data;
+    try {
+        data = text ? JSON.parse(text) : {};
+    } catch {
+        throw new Error(
+            'Sunucu geçerli JSON döndürmedi (çoğunlukla API rotası yerine HTML sayfası geldi). Sunucu rotalarını kontrol edin.'
+        );
+    }
     if (!res.ok) throw new Error(data.error || 'Bir hata oluştu');
     return data;
 }

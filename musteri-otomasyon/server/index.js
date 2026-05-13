@@ -32,20 +32,11 @@ app.use('/api/emails', emailsRouter);
 app.use('/api/settings', settingsRouter);
 app.use('/api/follow-ups', followupsRouter);
 
-// Serve static files from client/dist
-app.use(express.static(path.join(__dirname, '../client/dist')));
-
-// Catch all handler: send back React's index.html file for client-side routing
-app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, '../client/dist/index.html'));
-});
-
-// Health check
+// Bu rotalar mutlaka static ve SPA fallback'ten ÖNCE tanımlanmalı; aksi halde app.get('*') HTML döner ve /api çağrıları kırılır.
 app.get('/api/health', (req, res) => {
     res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// Dashboard stats
 app.get('/api/dashboard/stats', (req, res) => {
     try {
         const db = getDb();
@@ -83,8 +74,20 @@ app.get('/api/dashboard/stats', (req, res) => {
     }
 });
 
-// Start server
-app.listen(PORT, () => {
+// Serve static files from client/dist
+app.use(express.static(path.join(__dirname, '../client/dist')));
+
+// SPA: yalnızca API dışındaki GET isteklerinde index.html
+app.get('*', (req, res) => {
+    if (req.path.startsWith('/api')) {
+        res.status(404).json({ error: 'Not found' });
+        return;
+    }
+    res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
+
+// Start server (0.0.0.0: Railway/Docker gibi ortamlarda dışarıdan erişim için)
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Sunucu http://localhost:${PORT} adresinde çalışıyor`);
     startScheduler();
 });
