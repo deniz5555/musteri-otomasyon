@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { getDb } from '../db/database.js';
-import { testSmtpConnection } from '../services/emailService.js';
+import { testEmailConnection } from '../services/emailService.js';
 
 const router = Router();
 
@@ -24,6 +24,9 @@ function getAppSettings() {
         followup_2_days: settings.followup_2_days || process.env.FOLLOWUP_2_DAYS || '7',
         followup_3_days: settings.followup_3_days || process.env.FOLLOWUP_3_DAYS || '14',
         email_signature: settings.email_signature || '',
+        email_provider: (settings.email_provider || process.env.EMAIL_PROVIDER || 'smtp').toString().toLowerCase() === 'resend' ? 'resend' : 'smtp',
+        resend_api_key: settings.resend_api_key || process.env.RESEND_API_KEY || '',
+        resend_from: settings.resend_from || process.env.RESEND_FROM || '',
     };
 }
 
@@ -69,7 +72,7 @@ router.get('/:key', (req, res) => {
 // POST /api/settings/test-smtp - SMTP bağlantısını test et
 router.post('/test-smtp', async (req, res) => {
     try {
-        const result = await testSmtpConnection();
+        const result = await testEmailConnection();
         res.json(result);
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });

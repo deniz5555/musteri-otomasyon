@@ -1,6 +1,10 @@
 import { api } from '../utils/api.js';
 import { showToast } from '../utils/helpers.js';
 
+function escapeAttr(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+}
+
 export async function renderSettings(container) {
     let settings = {};
     try { settings = await api.getSettings(); } catch (e) { console.warn(e); }
@@ -9,11 +13,11 @@ export async function renderSettings(container) {
         <div class="page-header">
             <div>
                 <h1>Ayarlar</h1>
-                <p class="subtitle">SMTP, AI ve Apify yapılandırması</p>
+                <p class="subtitle">SMTP / Resend, AI ve Apify yapılandırması</p>
             </div>
             <div style="display:flex;gap:8px">
                 <button class="btn btn-secondary" id="btn-test-smtp">
-                    <span class="material-icons-round">mail_outline</span> SMTP Test
+                    <span class="material-icons-round">mail_outline</span> E-posta testi
                 </button>
                 <button class="btn btn-primary" id="btn-save-settings">
                     <span class="material-icons-round">save</span> Tümünü Kaydet
@@ -22,6 +26,23 @@ export async function renderSettings(container) {
         </div>
 
         <div class="settings-section card fade-in-up" style="animation-delay:0ms">
+            <div class="settings-section-title">
+                <span class="material-icons-round" style="color:var(--accent-cyan)">alternate_email</span> Gönderim kanalı
+            </div>
+            <p style="color:var(--text-tertiary);font-size:var(--font-sm);margin-bottom:var(--space-md)">Railway <strong>Hobby / Trial</strong> gibi planlarda giden <strong>SMTP (587) sıkça kapalıdır</strong>; test sürekli <code style="font-size:11px">Connection timeout</code> verir. Bu durumda <a href="https://resend.com" target="_blank" rel="noopener noreferrer">Resend</a> ücretsiz katmanından API key alıp aşağıyı doldurun — gönderim tamamen <strong>HTTPS</strong> ile yapılır.</p>
+            <div class="form-group"><label class="form-label">E-posta gönderimi</label>
+                <select class="form-select s-input" data-key="email_provider" id="sel-email-provider">
+                    <option value="smtp" ${(settings.email_provider || 'smtp') !== 'resend' ? 'selected' : ''}>SMTP (Gmail, Outlook, kendi sunucunuz)</option>
+                    <option value="resend" ${settings.email_provider === 'resend' ? 'selected' : ''}>Resend (HTTPS — Railway ile uyumlu)</option>
+                </select>
+            </div>
+            <div class="settings-grid" style="margin-top:var(--space-md)">
+                <div class="form-group" style="grid-column:1/-1"><label class="form-label">Resend API Key</label><input class="form-input s-input" data-key="resend_api_key" type="password" value="${escapeAttr(settings.resend_api_key || '')}" placeholder="re_..."></div>
+                <div class="form-group" style="grid-column:1/-1"><label class="form-label">Resend Gönderen (From)</label><input class="form-input s-input" data-key="resend_from" value="${escapeAttr(settings.resend_from || '')}" placeholder="LeadForge &lt;onboarding@resend.dev&gt;"></div>
+            </div>
+        </div>
+
+        <div class="settings-section card fade-in-up" style="animation-delay:60ms;margin-top:var(--space-md)">
             <div class="settings-section-title">
                 <span class="material-icons-round" style="color:var(--accent-blue)">email</span> SMTP E-posta Ayarları
             </div>
@@ -122,7 +143,12 @@ export async function renderSettings(container) {
             const response = await fetch('/api/settings/test-smtp', { method: 'POST' });
             const data = await response.json();
             if (data.success) {
-                showToast('SMTP bağlantısı başarılı! 🎉', 'success');
+                showToast(
+                    data.provider === 'resend'
+                        ? 'Resend API bağlantısı başarılı (HTTPS).'
+                        : 'SMTP bağlantısı başarılı.',
+                    'success'
+                );
             } else {
                 showToast(`SMTP hatası: ${data.message}`, 'error');
             }
