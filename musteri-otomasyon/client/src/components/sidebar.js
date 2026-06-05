@@ -29,13 +29,6 @@ export function renderSidebar(activePage) {
             </div>
         </div>
 
-        <div class="nav-section">
-            <div class="nav-section-title"><span class="nav-label">Sistem</span></div>
-            <div class="nav-item ${activePage === 'settings' ? 'active' : ''}" data-page="settings">
-                <span class="material-icons-round">settings</span>
-                <span class="nav-label">Ayarlar</span>
-            </div>
-        </div>
     `;
 
     sidebar.querySelectorAll('.nav-item').forEach(item => {

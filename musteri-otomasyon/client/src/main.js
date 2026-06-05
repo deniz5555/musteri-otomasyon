@@ -3,14 +3,11 @@ import { renderDashboard } from './pages/dashboard.js';
 import { renderLeads } from './pages/leads.js';
 import { renderCampaigns } from './pages/campaigns.js';
 import { renderEmails } from './pages/emails.js';
-import { renderSettings } from './pages/settings.js';
-
 const pages = {
     dashboard: renderDashboard,
     leads: renderLeads,
     campaigns: renderCampaigns,
     emails: renderEmails,
-    settings: renderSettings,
 };
 
 function getPage() {
