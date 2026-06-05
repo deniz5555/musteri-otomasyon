@@ -3,11 +3,50 @@ import { renderDashboard } from './pages/dashboard.js';
 import { renderLeads } from './pages/leads.js';
 import { renderCampaigns } from './pages/campaigns.js';
 import { renderEmails } from './pages/emails.js';
+import { renderSettings } from './pages/settings.js';
+
+const ADMIN_PASS = 'leadforge2025!';
+const ADMIN_SESSION_KEY = 'lf_admin_ok';
+
+function isAdminAuthed() {
+    return sessionStorage.getItem(ADMIN_SESSION_KEY) === '1';
+}
+
+function renderAdminLogin(container) {
+    container.innerHTML = `
+        <div class="empty-state" style="max-width:360px;margin:80px auto">
+            <span class="material-icons-round" style="font-size:48px;color:var(--accent-cyan)">lock</span>
+            <h3>Yönetici Girişi</h3>
+            <p>Ayarlara erişmek için şifreyi girin.</p>
+            <div style="display:flex;gap:8px;margin-top:16px">
+                <input id="admin-pass-input" type="password" class="form-control"
+                    placeholder="Şifre" style="flex:1"
+                    onkeydown="if(event.key==='Enter')document.getElementById('admin-pass-btn').click()">
+                <button id="admin-pass-btn" class="btn btn-primary">Giriş</button>
+            </div>
+            <p id="admin-pass-err" style="color:var(--accent-red);margin-top:8px;display:none">Yanlış şifre.</p>
+        </div>
+    `;
+    document.getElementById('admin-pass-btn').addEventListener('click', () => {
+        const val = document.getElementById('admin-pass-input').value;
+        if (val === ADMIN_PASS) {
+            sessionStorage.setItem(ADMIN_SESSION_KEY, '1');
+            navigate();
+        } else {
+            document.getElementById('admin-pass-err').style.display = '';
+        }
+    });
+}
+
 const pages = {
     dashboard: renderDashboard,
     leads: renderLeads,
     campaigns: renderCampaigns,
     emails: renderEmails,
+    settings: (container) => {
+        if (!isAdminAuthed()) { renderAdminLogin(container); return; }
+        return renderSettings(container);
+    },
 };
 
 function getPage() {
