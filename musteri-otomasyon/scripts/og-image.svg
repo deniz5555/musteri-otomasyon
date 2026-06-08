@@ -1,0 +1,94 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f1117"/>
+      <stop offset="60%" stop-color="#111827"/>
+      <stop offset="100%" stop-color="#0f1117"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#06c0d9"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#3b82f6" stop-opacity="0.05"/>
+    </linearGradient>
+    <radialGradient id="glow2" cx="25%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.12"/>
+      <stop offset="100%" stop-color="#0f1117" stop-opacity="0"/>
+    </radialGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#06c0d9" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Glow blobs -->
+  <circle cx="300" cy="315" r="350" fill="url(#glow2)"/>
+  <circle cx="960" cy="200" r="250" fill="url(#glow)"/>
+
+  <!-- Dot grid pattern (right side) -->
+  <g fill="#38bdf8" fill-opacity="0.08">
+    <circle cx="720" cy="80" r="3"/><circle cx="760" cy="80" r="3"/><circle cx="800" cy="80" r="3"/><circle cx="840" cy="80" r="3"/><circle cx="880" cy="80" r="3"/>
+    <circle cx="720" cy="120" r="3"/><circle cx="760" cy="120" r="3"/><circle cx="800" cy="120" r="3"/><circle cx="840" cy="120" r="3"/><circle cx="880" cy="120" r="3"/>
+    <circle cx="720" cy="160" r="3"/><circle cx="760" cy="160" r="3"/><circle cx="800" cy="160" r="3"/><circle cx="840" cy="160" r="3"/><circle cx="880" cy="160" r="3"/>
+    <circle cx="920" cy="80" r="3"/><circle cx="960" cy="80" r="3"/><circle cx="1000" cy="80" r="3"/><circle cx="1040" cy="80" r="3"/>
+    <circle cx="920" cy="120" r="3"/><circle cx="960" cy="120" r="3"/><circle cx="1000" cy="120" r="3"/><circle cx="1040" cy="120" r="3"/>
+  </g>
+
+  <!-- Top accent bar -->
+  <rect x="80" y="72" width="120" height="4" rx="2" fill="url(#accent)"/>
+
+  <!-- Icon: lightning bolt -->
+  <g transform="translate(80, 110)" filter="url(#shadow)">
+    <path d="M75 0 L30 65 H58 L42 115 L88 50 H60 Z"
+          fill="url(#accent)" stroke="#38bdf8" stroke-width="2" stroke-linejoin="round"/>
+  </g>
+
+  <!-- Brand name -->
+  <text x="195" y="175" font-family="Arial, Helvetica, sans-serif" font-size="72" font-weight="800" fill="#f1f5f9" letter-spacing="-2">LeadForge</text>
+  <text x="195" y="245" font-family="Arial, Helvetica, sans-serif" font-size="52" font-weight="300" fill="url(#accent)" letter-spacing="4">AI</text>
+
+  <!-- Divider line -->
+  <rect x="80" y="285" width="1040" height="1" fill="#1e293b"/>
+
+  <!-- Tagline -->
+  <text x="80" y="340" font-family="Arial, Helvetica, sans-serif" font-size="28" font-weight="400" fill="#94a3b8">
+    Yapay Zeka ile Musteri Bulma ve E-posta Otomasyonu
+  </text>
+
+  <!-- Feature chips -->
+  <!-- Chip 1 -->
+  <rect x="80" y="390" width="230" height="48" rx="24" fill="#1e293b" stroke="#38bdf8" stroke-width="1" stroke-opacity="0.4"/>
+  <text x="170" y="421" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="500" fill="#38bdf8" text-anchor="middle">Google Maps Lead</text>
+  <circle cx="106" cy="414" r="10" fill="#38bdf8" fill-opacity="0.15"/>
+  <path d="M101 414 l4 4 7-8" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- Chip 2 -->
+  <rect x="330" y="390" width="230" height="48" rx="24" fill="#1e293b" stroke="#3b82f6" stroke-width="1" stroke-opacity="0.4"/>
+  <text x="420" y="421" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="500" fill="#3b82f6" text-anchor="middle">YZ E-posta Yazimi</text>
+  <circle cx="356" cy="414" r="10" fill="#3b82f6" fill-opacity="0.15"/>
+  <path d="M351 410 l10 4-10 4z" stroke="#3b82f6" stroke-width="1.5" stroke-linejoin="round" fill="none"/>
+
+  <!-- Chip 3 -->
+  <rect x="580" y="390" width="230" height="48" rx="24" fill="#1e293b" stroke="#a78bfa" stroke-width="1" stroke-opacity="0.4"/>
+  <text x="670" y="421" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="500" fill="#a78bfa" text-anchor="middle">Kampanya Yonetimi</text>
+  <circle cx="606" cy="414" r="10" fill="#a78bfa" fill-opacity="0.15"/>
+  <path d="M601 409 l10 5-10 5z" stroke="#a78bfa" stroke-width="1.5" stroke-linejoin="round" fill="none"/>
+
+  <!-- Chip 4 -->
+  <rect x="830" y="390" width="230" height="48" rx="24" fill="#1e293b" stroke="#34d399" stroke-width="1" stroke-opacity="0.4"/>
+  <text x="920" y="421" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="500" fill="#34d399" text-anchor="middle">Otomatik Takip</text>
+  <circle cx="856" cy="414" r="10" fill="#34d399" fill-opacity="0.15"/>
+  <path d="M851 414 l4 4 7-8" stroke="#34d399" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+
+  <!-- Bottom bar -->
+  <rect x="80" y="510" width="1040" height="1" fill="#1e293b"/>
+  <text x="80" y="548" font-family="Arial, Helvetica, sans-serif" font-size="20" fill="#475569">
+    Powered by OpenAI · Apify · Node.js
+  </text>
+  <rect x="950" y="528" width="170" height="36" rx="18" fill="url(#accent)" fill-opacity="0.15" stroke="url(#accent)" stroke-width="1" stroke-opacity="0.5"/>
+  <text x="1035" y="551" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="600" fill="#38bdf8" text-anchor="middle">leadforge.ai</text>
+</svg>

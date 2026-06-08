@@ -4,8 +4,8 @@ import { renderLeads } from './pages/leads.js';
 import { renderCampaigns } from './pages/campaigns.js';
 import { renderEmails } from './pages/emails.js';
 import { renderSettings } from './pages/settings.js';
+import { api } from './utils/api.js';
 
-const ADMIN_PASS = 'leadforge2025!';
 const ADMIN_SESSION_KEY = 'lf_admin_ok';
 
 function isAdminAuthed() {
@@ -27,13 +27,24 @@ function renderAdminLogin(container) {
             <p id="admin-pass-err" style="color:var(--accent-red);margin-top:8px;display:none">Yanlış şifre.</p>
         </div>
     `;
-    document.getElementById('admin-pass-btn').addEventListener('click', () => {
+    document.getElementById('admin-pass-btn').addEventListener('click', async () => {
+        const btn = document.getElementById('admin-pass-btn');
+        const errEl = document.getElementById('admin-pass-err');
         const val = document.getElementById('admin-pass-input').value;
-        if (val === ADMIN_PASS) {
+
+        btn.disabled = true;
+        btn.textContent = '...';
+        errEl.style.display = 'none';
+
+        try {
+            await api.verifyAdminPassword(val);
             sessionStorage.setItem(ADMIN_SESSION_KEY, '1');
             navigate();
-        } else {
-            document.getElementById('admin-pass-err').style.display = '';
+        } catch {
+            errEl.style.display = '';
+        } finally {
+            btn.disabled = false;
+            btn.textContent = 'Giriş';
         }
     });
 }

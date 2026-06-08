@@ -10,6 +10,7 @@ import campaignsRouter from './routes/campaigns.js';
 import emailsRouter from './routes/emails.js';
 import settingsRouter from './routes/settings.js';
 import followupsRouter from './routes/followups.js';
+import authRouter from './routes/auth.js';
 import { startScheduler } from './cron/scheduler.js';
 
 dotenv.config();
@@ -32,6 +33,7 @@ app.use(express.json({ limit: '10mb' }));
 getDb();
 
 // Routes
+app.use('/api/auth', authRouter);
 app.use('/api/leads', leadsRouter);
 app.use('/api/campaigns', campaignsRouter);
 app.use('/api/emails', emailsRouter);

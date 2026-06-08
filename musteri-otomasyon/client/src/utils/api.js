@@ -62,6 +62,9 @@ export const api = {
     // Follow-up
     runFollowUps: () => request('/follow-ups/run', { method: 'POST' }),
 
+    // Auth
+    verifyAdminPassword: (password) => request('/auth/verify', { method: 'POST', body: { password } }),
+
     // Settings
     getSettings: () => request('/settings'),
     updateSettings: (data) => request('/settings', { method: 'PUT', body: data }),

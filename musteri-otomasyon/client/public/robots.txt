@@ -1,0 +1,5 @@
+# LeadForge AI - robots.txt
+# Bu bir dahili yonetim panelidir, arama motorlari tarafindan indexlenmemeli.
+
+User-agent: *
+Disallow: /

@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a2540"/>
+      <stop offset="100%" stop-color="#0f1117"/>
+    </linearGradient>
+    <linearGradient id="bolt" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#06c0d9"/>
+    </linearGradient>
+    <linearGradient id="circle" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#06c0d9" stop-opacity="0.1"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background rounded square -->
+  <rect width="512" height="512" rx="110" fill="url(#bg)"/>
+
+  <!-- Decorative circle -->
+  <circle cx="256" cy="256" r="160" fill="url(#circle)"/>
+
+  <!-- Lightning bolt (AI / automation symbol) -->
+  <path d="M300 90 L170 275 H248 L212 422 L342 237 H264 Z"
+        fill="url(#bolt)"
+        stroke="#38bdf8"
+        stroke-width="4"
+        stroke-linejoin="round"/>
+
+  <!-- Subtle dot grid top-right -->
+  <circle cx="400" cy="120" r="5" fill="#38bdf8" fill-opacity="0.3"/>
+  <circle cx="430" cy="120" r="5" fill="#38bdf8" fill-opacity="0.2"/>
+  <circle cx="400" cy="150" r="5" fill="#38bdf8" fill-opacity="0.2"/>
+  <circle cx="430" cy="150" r="5" fill="#38bdf8" fill-opacity="0.1"/>
+</svg>
